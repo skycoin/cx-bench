@@ -237,12 +237,17 @@ func reportCommand(root string, args []string) error {
 	b.WriteString("## Best of each language, per benchmark\n\n")
 	b.WriteString("| benchmark | best CX | x C | best Lua | x C | best Go | x C | C | sig CX vs C |\n|---|---|---:|---|---:|---|---:|---:|---|\n")
 	var chartRows []chartRow
-	for _, bench := range benchNames {
+	for _, bench := range benchRows {
 		row := chartRow{bench: bench}
 		c := best(stats, forms, reportGroups[3].forms, bench)
 		fmt.Fprintf(&b, "| %s |", bench)
 		for gi := 0; gi < 3; gi++ {
 			s := best(stats, forms, reportGroups[gi].forms, bench)
+			if s == nil && groupNotRun(stats, forms, reportGroups[gi].forms, bench) {
+				b.WriteString(" not run | - |")
+				row.notRun = strings.TrimSpace(row.notRun + " " + reportGroups[gi].name)
+				continue
+			}
 			if s == nil {
 				b.WriteString(" - | - |")
 				continue
@@ -277,7 +282,7 @@ func reportCommand(root string, args []string) error {
 	b.WriteString("Load is process start to S, Loop 1 and Loop 2 the two identical passes, Finish from 2 to exit. Percent of the whole run.\n\n")
 	b.WriteString("| benchmark | language | form | size | Load | Loop 1 | Loop 2 | Finish | Load % | Loop 1 % | Loop 2 % | Finish % | spread % | placement % | load avg |\n")
 	b.WriteString("|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|\n")
-	for _, bench := range benchNames {
+	for _, bench := range benchRows {
 		for _, group := range reportGroups {
 			s := best(stats, forms, group.forms, bench)
 			if s == nil {
@@ -295,7 +300,7 @@ func reportCommand(root string, args []string) error {
 	b.WriteString("| form | benchmark | size | per round | min | max | spread % | placement % | sweep /8 | /4 | /2 | x1 | server 1st | 3rd | self % | load avg |\n")
 	b.WriteString("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|\n")
 	for _, label := range forms {
-		for _, bench := range benchNames {
+		for _, bench := range benchRows {
 			s := stats[label][bench]
 			if s == nil || len(s.nsRound) == 0 {
 				continue
@@ -424,4 +429,17 @@ func precomputedMark(stats map[string]map[string]*benchStats, forms []string) {
 			}
 		}
 	}
+}
+
+// groupNotRun tells whether a form of the group left the benchmark out on
+// purpose and no form of the group ran it.
+func groupNotRun(stats map[string]map[string]*benchStats, forms []string, group []string, bench string) bool {
+	for _, label := range forms {
+		for _, name := range group {
+			if s := stats[label][bench]; formBase(label) == name && s != nil && strings.HasPrefix(s.note, "not run: ") {
+				return true
+			}
+		}
+	}
+	return false
 }

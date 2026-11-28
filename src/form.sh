@@ -4,19 +4,24 @@
 # uses, so each form only says how to build and how to start a program.
 #
 # A form's run.sh sets FORM_CAPS (any of markers selftime server layout),
-# optionally FORM_VARIANTS, defines form_cmd <name> <size>, form_cmd_empty
+# optionally FORM_VARIANTS and FORM_NOT_RUN (benchmarks it leaves out, with
+# FORM_NOT_RUN_REASON), defines form_cmd <name> <size>, form_cmd_empty
 # and, with server in FORM_CAPS, form_cmd_server, then calls form_main.
 # Each prints the command to start, one argument per line.
 
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 OUT=${CXBENCH_OUT:-$ROOT/out}
 LAYOUT=${LAYOUT:-a}
-BENCH_NAMES=(count fib array struct memtest primes ackermann digitalroot factorialiter factorialrec structs structserialize)
+BENCH_NAMES=(count fib array struct memtest primes ackermann digitalroot factorialiter factorialrec structs structserialize fibiter ackermanniter)
 
-# bench_name turns a benchmark number from 1 to 12 or a name into the name.
+# CX_RECURSIVE are the recursive benchmarks. The CX forms run only their loop
+# variants, fibiter, ackermanniter and factorialiter (decision D145).
+CX_RECURSIVE="fib ackermann factorialrec"
+
+# bench_name turns a benchmark number or a name into the name.
 bench_name() {
 	if [[ $1 =~ ^[0-9]+$ ]]; then
-		(($1 >= 1 && $1 <= 12)) || return 1
+		(($1 >= 1 && $1 <= ${#BENCH_NAMES[@]})) || return 1
 		echo "${BENCH_NAMES[$1 - 1]}"
 		return
 	fi
@@ -43,6 +48,15 @@ node_flags() {
 
 form_has() { [[ " $FORM_CAPS " == *" $1 "* ]]; }
 
+# form_runs fails with "not run: <reason>" on stderr for a benchmark in
+# FORM_NOT_RUN. The harness reports that benchmark as skipped, not failed.
+form_runs() {
+	if [[ " ${FORM_NOT_RUN:-} " == *" $1 "* ]]; then
+		echo "not run: $1, ${FORM_NOT_RUN_REASON:-left out by this form}" >&2
+		return 1
+	fi
+}
+
 form_main() {
 	local argv
 	case ${1:-} in
@@ -54,6 +68,7 @@ form_main() {
 		else
 			local name
 			name=$(bench_name "${2:-}") || { echo "unknown benchmark ${2:-}" >&2; exit 2; }
+			form_runs "$name" || exit 1
 			form_cmd "$name" "${3:?size}"
 		fi
 		;;
@@ -77,6 +92,7 @@ form_main() {
 	*)
 		local name
 		name=$(bench_name "$1") || { echo "unknown benchmark $1" >&2; exit 2; }
+		form_runs "$name" || exit 1
 		mapfile -t argv < <(form_cmd "$name" "${2:?size}")
 		((${#argv[@]})) || exit 1
 		if [[ -n ${3:-} ]] && form_has selftime; then

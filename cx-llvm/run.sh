@@ -3,6 +3,8 @@
 # src/layout/pad.c first. The size and the zero are arguments, so LLVM sees
 # neither at build time.
 source "$(dirname "$0")/../src/form.sh"
+FORM_NOT_RUN=$CX_RECURSIVE
+FORM_NOT_RUN_REASON="recursive, the CX forms run its loop variant (decision D145)"
 FORM_CAPS="layout"
 native() {
 	local source=$1 program=$2

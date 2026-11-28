@@ -11,12 +11,14 @@
 
 #include "bench.h"
 
+#define PROGRAM_COUNT 14
+
 typedef uint64_t (*bench_function)(int64_t size, int *pass);
 
 static const struct {
 	const char *name;
 	bench_function run;
-} programs[12] = {
+} programs[PROGRAM_COUNT] = {
 	{"count", bench_count},
 	{"fib", bench_fib},
 	{"array", bench_array},
@@ -29,6 +31,8 @@ static const struct {
 	{"factorialrec", bench_factorialrec},
 	{"structs", bench_structs},
 	{"structserialize", bench_structserialize},
+	{"fibiter", bench_fibiter},
+	{"ackermanniter", bench_ackermanniter},
 };
 
 /* Read again before each pass, so the compiler cannot reuse the first pass
@@ -56,8 +60,8 @@ static int program_find(const char *key) {
 	char *end;
 	long number = strtol(key, &end, 10);
 	if (*key && !*end)
-		return number >= 1 && number <= 12 ? (int)number : 0;
-	for (int i = 0; i < 12; i++)
+		return number >= 1 && number <= PROGRAM_COUNT ? (int)number : 0;
+	for (int i = 0; i < PROGRAM_COUNT; i++)
 		if (strcmp(programs[i].name, key) == 0)
 			return i + 1;
 	return 0;
@@ -65,7 +69,7 @@ static int program_find(const char *key) {
 
 static void usage(void) {
 	fprintf(stderr, "usage: bench <name|number> <size> [-time=ms|us] | bench empty | bench -server\n");
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < PROGRAM_COUNT; i++)
 		fprintf(stderr, "%d %s\n", i + 1, programs[i].name);
 	exit(2);
 }
@@ -79,7 +83,7 @@ static void server_run(void) {
 			continue;
 		if (number == 0)
 			break;
-		if (number < 1 || number > 12 || fields != 3) {
+		if (number < 1 || number > PROGRAM_COUNT || fields != 3) {
 			printf("%lld error\n", number);
 			fflush(stdout);
 			continue;

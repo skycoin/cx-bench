@@ -34,7 +34,7 @@ func measureCommand(root string, args []string) error {
 	startupX := flags.Int("startup", 100, "shortest run in multiples of the empty program")
 	maximum := flags.Duration("max", 10*time.Second, "longest target run, for forms whose start up is long")
 	skip := flags.String("skip", "", "form labels to leave out, comma separated, lua/5.4 for example")
-	benchList := flags.String("benches", strings.Join(benchNames, ","), "benchmarks, comma separated")
+	benchList := flags.String("benches", strings.Join(benchRows, ","), "benchmarks, comma separated")
 	flags.Parse(args)
 	if *out == "" {
 		*out = filepath.Join(root, "results", time.Now().UTC().Format("2006-01-02"))
@@ -117,7 +117,8 @@ func measureBench(f form, bench string, empty, target time.Duration, settings me
 	for {
 		r := oneShot(f, "a", bench, size, want)
 		r.Kind = "size"
-		if strings.Contains(r.Error, "no Lua 5.1 version") {
+		if notRun(r) {
+			record(run{Kind: "note", Form: f.label(), Bench: bench, Pass: true, Note: r.Error[strings.Index(r.Error, "not run: "):]})
 			return
 		}
 		record(r)

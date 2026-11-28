@@ -1,6 +1,6 @@
 # cx-bench
 
-Cross language benchmarks for CX: the same twelve programs in CX, Go, C, Lua
+Cross language benchmarks for CX: the same fourteen programs in CX, Go, C, Lua
 and Python, native and in wasm, with one harness that times them all on one
 clock and checks every result.
 
@@ -25,7 +25,7 @@ versions of the first results).
 | lua | src/lua54 on lua5.4 and lua5.5 (variants 5.4, 5.5) | yes | yes |
 | luajit | src/luajit on LuaJIT 2.1 | yes | yes |
 | lua-wasm | src/lua54 on Lua 5.4.9 built for wasip1, node:wasi | yes | yes |
-| gopher-lua | src/lua51 on gopher-lua (Lua 5.1 in Go), 9 of 12 | yes | yes |
+| gopher-lua | src/lua51 on gopher-lua (Lua 5.1 in Go), 11 of 14 | yes | yes |
 | python | src/python on CPython 3 | yes | yes |
 | cx-vm | src/cx on `cx --executor=vm` | no | no |
 | cx-image | src/cx built with `--target=image`, run by cx-core-image | no | no |
@@ -59,10 +59,10 @@ comes from the command line, so no compiler sees it at build time. Each
 round mixes its result into an FNV-1a hash, and the program checks every
 round against the math and prints `<name> pass`.
 
-A round of fib, ackermann, factorialiter, factorialrec and struct is the same
-pure computation every time, so clang and TinyGo moved it out of the loop of
-rounds and ran it once, and LLVM turned the count loop into its closed form.
-These rounds add a zero the compiler cannot see as a constant: `fib(25 +
+A round of fib, fibiter, ackermann, ackermanniter, factorialiter, factorialrec
+and struct is the same pure computation every time, so clang and TinyGo moved
+it out of the loop of rounds and ran it once, and LLVM turned the count loop
+into its closed form. These rounds add a zero the compiler cannot see as a constant: `fib(25 +
 zero)`, and `sum += i + zero` in count. It is a volatile in C, an atomic
 load in Go, a volatile load in TinyGo and a plain variable in the
 interpreters, which precompute nothing. CX reads it as the second argument,
@@ -84,6 +84,15 @@ time and removed the loop) and leaves it out of the best of table.
 | 10 | factorialrec | n! for n 0 to 20 by recursion |
 | 11 | structs | fill and sum a struct of two 100,000 element arrays |
 | 12 | structserialize | encode and decode a point and 16 int32 in a 72 byte buffer |
+| 13 | fibiter | fib(25) with a loop, 25 steps |
+| 14 | ackermanniter | Ackermann(3, 5) with an explicit stack, 42,438 steps |
+
+fib, ackermann and factorialrec recurse. Each has a loop variant with the
+same result and hash: fibiter, ackermanniter and factorialiter (decision
+D145). The report and the chart put each loop variant next to its recursive
+variant. The CX forms run only the loop variants, since CX treats recursion
+as a warning and keeps a call depth check only in recursive code (D144), so
+their recursive rows show not run.
 
 The numbers are fixed and used by server mode. `expected.txt` holds the hash
 of one pass at each size the results use. `harness/hashmath.go` computes it

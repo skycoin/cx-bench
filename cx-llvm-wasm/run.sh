@@ -3,6 +3,8 @@
 # node:wasi. VARIANT=default runs node as it ships, turbofan with
 # --no-liftoff. The size and the zero are arguments, as in cx-llvm.
 source "$(dirname "$0")/../src/form.sh"
+FORM_NOT_RUN=$CX_RECURSIVE
+FORM_NOT_RUN_REASON="recursive, the CX forms run its loop variant (decision D145)"
 FORM_CAPS=""
 FORM_VARIANTS="default turbofan"
 module() {

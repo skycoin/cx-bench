@@ -10,7 +10,8 @@
 io.stderr:write("S")
 
 local NAMES = { "count", "fib", "array", "struct", "memtest", "primes", "ackermann",
-	"digitalroot", "factorialiter", "factorialrec", "structs", "structserialize" }
+	"digitalroot", "factorialiter", "factorialrec", "structs", "structserialize", "fibiter",
+	"ackermanniter" }
 local FNV_OFFSET = 0xcbf29ce484222325 -- 14695981039346656037
 local FNV_PRIME = 1099511628211
 

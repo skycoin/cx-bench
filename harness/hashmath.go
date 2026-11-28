@@ -16,7 +16,7 @@ func hashRound(bench string, round uint64) []uint64 {
 	switch bench {
 	case "count":
 		return []uint64{999999 * 1000000 / 2}
-	case "fib":
+	case "fib", "fibiter":
 		return []uint64{75025}
 	case "array":
 		return []uint64{150 * 149 / 2}
@@ -49,7 +49,7 @@ func hashRound(bench string, round uint64) []uint64 {
 			}
 		}
 		return words
-	case "ackermann":
+	case "ackermann", "ackermanniter":
 		// A(3, n) = 2^(n+3) - 3.
 		return []uint64{1<<8 - 3}
 	case "digitalroot":

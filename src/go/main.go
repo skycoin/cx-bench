@@ -43,6 +43,8 @@ var benchPrograms = []benchProgram{
 	{"factorialrec", benchFactorialRec},
 	{"structs", benchStructs},
 	{"structserialize", benchStructSerialize},
+	{"fibiter", benchFibIter},
+	{"ackermanniter", benchAckermannIter},
 }
 
 // benchSize is read again before each pass, so no compiler can reuse the
