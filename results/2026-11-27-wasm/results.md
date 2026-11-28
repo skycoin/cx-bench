@@ -2,9 +2,9 @@
 
 Machine: the x86-64 desktop of the native results (8 logical CPUs, 16 GB RAM, Linux 7.2, the desktop session running beside). Node 26.12.1, as it ships (default) and with --no-liftoff (turbofan). Three timed runs per benchmark, not five, and runs capped at 10 s, see Notes. Tools: clang 23.1.4, Go 1.27.3, TinyGo 0.44.0-dev, Lua 5.4.9, skycoin-cx 01deb81af6fc.
 
-Harness: linux/amd64, 8 logical CPUs, started 2026-11-27T03:39:42-06:00.
+Harness: linux/amd64, 8 logical CPUs, started 2026-11-27T09:39:42Z.
 
-Harness: linux/amd64, 8 logical CPUs, started 2026-11-27T04:35:54-06:00.
+Harness: linux/amd64, 8 logical CPUs, started 2026-11-27T10:35:54Z.
 
 Time per round is the time of the two passes over two times the size, from the phase markers. A form without markers (the CX forms) has it from the whole run less its empty program, marked est. A difference to C counts (sig yes) only when it is larger than the run to run spread and the placement delta of both forms. A form under a tenth of C on a benchmark is marked precomputed: its compiler worked out the result at build time and removed the work, and the best of table leaves it out.
 

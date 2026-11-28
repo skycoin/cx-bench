@@ -37,7 +37,7 @@ func measureCommand(root string, args []string) error {
 	benchList := flags.String("benches", strings.Join(benchNames, ","), "benchmarks, comma separated")
 	flags.Parse(args)
 	if *out == "" {
-		*out = filepath.Join(root, "results", time.Now().Format("2006-01-02"))
+		*out = filepath.Join(root, "results", time.Now().UTC().Format("2006-01-02"))
 	}
 	settings := measureSettings{runs: *runs, minimum: *minimum, startupX: *startupX, maximum: *maximum, benches: strings.Split(*benchList, ","), sizeLimit: 1 << 30}
 	forms, err := formsLoad(root, formNamesParse(*formList))
@@ -64,9 +64,9 @@ func measureCommand(root string, args []string) error {
 		if !r.Pass {
 			status = "FAIL " + r.Error
 		}
-		fmt.Printf("%s %-7s %-18s %-15s %-1s size %-10d %9.1f ms load %.2f %s\n", time.Now().Format("15:04:05"), r.Kind, r.Form, r.Bench, r.Layout, r.Size, float64(r.TotalNs)/1e6, r.LoadAvg, status)
+		fmt.Printf("%s %-7s %-18s %-15s %-1s size %-10d %9.1f ms load %.2f %s\n", time.Now().UTC().Format("15:04:05"), r.Kind, r.Form, r.Bench, r.Layout, r.Size, float64(r.TotalNs)/1e6, r.LoadAvg, status)
 	}
-	record(run{Kind: "machine", Form: "-", Pass: true, Note: fmt.Sprintf("%s/%s, %d logical CPUs, started %s", runtime.GOOS, runtime.GOARCH, runtime.NumCPU(), time.Now().Format(time.RFC3339))})
+	record(run{Kind: "machine", Form: "-", Pass: true, Note: fmt.Sprintf("%s/%s, %d logical CPUs, started %s", runtime.GOOS, runtime.GOARCH, runtime.NumCPU(), time.Now().UTC().Format(time.RFC3339))})
 	for _, f := range forms {
 		for _, layout := range layoutsOf(f) {
 			var totals []int64

@@ -1,4 +1,4 @@
-{"kind":"machine","form":"-","loadavg":0,"total_ns":0,"pass":true,"note":"linux/amd64, 8 logical CPUs, started 2026-11-27T03:39:42-06:00"}
+{"kind":"machine","form":"-","loadavg":0,"total_ns":0,"pass":true,"note":"linux/amd64, 8 logical CPUs, started 2026-11-27T09:39:42Z"}
 {"kind":"empty","form":"c-wasm","layout":"a","loadavg":2.05,"total_ns":55080277,"marks_ns":{"F":51317138,"S":51275875},"pass":true}
 {"kind":"empty","form":"c-wasm","layout":"a","loadavg":2.05,"total_ns":70789283,"marks_ns":{"F":67023488,"S":66988832},"pass":true}
 {"kind":"empty","form":"c-wasm","layout":"a","loadavg":2.05,"total_ns":58273553,"marks_ns":{"F":54499357,"S":54468466},"pass":true}
@@ -556,7 +556,7 @@
 {"kind":"sweep","form":"go-wasm","bench":"structserialize","layout":"a","size":9457679,"loadavg":2.94,"total_ns":6326855255,"marks_ns":{"1":3905487563,"2":6319025870,"F":6321883612,"S":97552249},"hash":"1927453916199121474","pass":true}
 {"kind":"server","form":"go-wasm","bench":"structserialize","size":18915359,"loadavg":2.87,"total_ns":17961225057,"marks_ns":{"F":17954555240,"S":106171305},"hash":"12883562606442913938","pass":true,"server_us":[7857072,4920838,5060986]}
 {"kind":"selftime","form":"go-wasm","bench":"structserialize","layout":"a","size":18915359,"loadavg":2.83,"total_ns":12934469194,"marks_ns":{"1":7980193804,"2":12925419254,"F":12929137402,"S":92853628},"hash":"12883562606442913938","pass":true,"self_us":[7885085,4944958]}
-{"kind":"machine","form":"-","loadavg":0,"total_ns":0,"pass":true,"note":"linux/amd64, 8 logical CPUs, started 2026-11-27T04:35:54-06:00"}
+{"kind":"machine","form":"-","loadavg":0,"total_ns":0,"pass":true,"note":"linux/amd64, 8 logical CPUs, started 2026-11-27T10:35:54Z"}
 {"kind":"empty","form":"go-wasm/turbofan","layout":"a","loadavg":2.14,"total_ns":1297163509,"marks_ns":{"F":1285357361,"S":1219473651},"pass":true}
 {"kind":"empty","form":"go-wasm/turbofan","layout":"a","loadavg":2.14,"total_ns":1340263125,"marks_ns":{"F":1328443056,"S":1267928469},"pass":true}
 {"kind":"empty","form":"go-wasm/turbofan","layout":"a","loadavg":2.21,"total_ns":1316927018,"marks_ns":{"F":1304899640,"S":1241969565},"pass":true}
