@@ -406,8 +406,8 @@ func yesNo(value bool) string {
 
 // precomputedMark marks a form whose time per round is under a tenth of C's on
 // the same benchmark: no form does the work ten times faster than clang
-// -O2, so the compiler removed it (cx-llvm precomputes count, as CX has no value
-// a compiler cannot see). The best of table leaves such a form out.
+// -O2, so the compiler removed it (cx-llvm precomputed count while CX had no
+// input a compiler cannot see). The best of table leaves such a form out.
 func precomputedMark(stats map[string]map[string]*benchStats, forms []string) {
 	for _, label := range forms {
 		reference := "c"

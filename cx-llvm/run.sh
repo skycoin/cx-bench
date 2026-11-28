@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # cx build --target=llvm, a native program through clang. LAYOUT=b links
-# src/layout/pad.c first. The size goes into the source, so LLVM sees it as
-# a constant, see README.md.
+# src/layout/pad.c first. The size and the zero are arguments, so LLVM sees
+# neither at build time.
 source "$(dirname "$0")/../src/form.sh"
 FORM_CAPS="layout"
 native() {
@@ -18,9 +18,8 @@ native() {
 	echo "$program"
 }
 form_cmd() {
-	local file
-	file=$(cx_sized "$1" "$2" "$OUT/cx-sized") || return 1
-	native "$file" "$OUT/cx-llvm/$LAYOUT/$(basename "$file" .cx)"
+	native "$ROOT/src/cx/$1.cx" "$OUT/cx-llvm/$LAYOUT/$1-$(cx_key "$1")" || return 1
+	printf '%s\n' "$2" 0
 }
 form_cmd_empty() { native "$ROOT/src/cx/empty.cx" "$OUT/cx-llvm/$LAYOUT/empty"; }
 form_main "$@"

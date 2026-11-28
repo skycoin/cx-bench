@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs one sized image once under perf record on cx-core-image.
+# Runs one image once under perf record on cx-core-image.
 # CX has no server mode, so this is a one-shot run of two passes.
 # Usage: profile.sh <name|number> <size>. Writes results/profiles.
 set -eu

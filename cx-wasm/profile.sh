@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs one sized program once under node --cpu-prof. CX has no server mode.
+# Runs one program once under node --cpu-prof. CX has no server mode.
 # Usage: profile.sh <name|number> <size>. Writes a .cpuprofile, which Chrome
 # DevTools (Performance, load profile) or speedscope opens.
 set -eu

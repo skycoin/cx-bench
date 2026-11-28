@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs one sized program once under perf record on the cx binary, then with
+# Runs one program once under perf record on the cx binary, then with
 # cx -debug-profile, which times each compile and run phase and profiles the
 # parse only (a pprof of the vm run loop would be a small addition to cx).
 # CX has no server mode, so this is a one-shot run of two passes.

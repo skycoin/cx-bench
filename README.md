@@ -55,9 +55,9 @@ integers), and Python has its own.
 ## The programs
 
 Each benchmark runs a fixed unit of work, a round, `size` times. The size
-comes from the command line, so no compiler sees it at build time (except in
-CX, see below). Each round mixes its result into an FNV-1a hash, and the
-program checks every round against the math and prints `<name> pass`.
+comes from the command line, so no compiler sees it at build time. Each
+round mixes its result into an FNV-1a hash, and the program checks every
+round against the math and prints `<name> pass`.
 
 A round of fib, ackermann, factorialiter, factorialrec and struct is the same
 pure computation every time, so clang and TinyGo moved it out of the loop of
@@ -65,9 +65,8 @@ rounds and ran it once, and LLVM turned the count loop into its closed form.
 These rounds add a zero the compiler cannot see as a constant: `fib(25 +
 zero)`, and `sum += i + zero` in count. It is a volatile in C, an atomic
 load in Go, a volatile load in TinyGo and a plain variable in the
-interpreters, which precompute nothing. CX has no such value (see below), so
-LLVM still computes the whole count loop at build time and removes it from
-cx-llvm. The report marks a form that is under a tenth of
+interpreters, which precompute nothing. CX reads it as the second argument,
+see below. The report marks a form that is under a tenth of
 C on a benchmark as precomputed (the compiler worked out the result at build
 time and removed the loop) and leaves it out of the best of table.
 
@@ -126,25 +125,26 @@ again shows warm up. `0` exits. Start up is paid once.
 
 ### CX
 
-The vm subset of CX, the code cx-vm, cx-image and cx-llvm run, has no
-`os.Args`, no stdin (`read`), no clock (`time.UnixNano`), no `os.Exit` and
-no stderr, and its prints are buffered until the program exits. All of
-these exist in the old loop only. So for the CX forms:
+The vm subset of CX, the code cx-vm, cx-image and cx-llvm run, reads its
+arguments and stdin through the terminal library of skycoin-cx
+(`os.ArgRead` and `os.InputLineRead`, decision D142), but has no clock
+(`time.UnixNano`), no `os.Exit` and no stderr. So for the CX forms:
 
-* run.sh writes the size into a copy of the program,
-  `var benchSize i32 = <size>`, and builds that copy for cx-image and
-  cx-llvm. cx-llvm therefore sees the size as a constant. The size sweep and
-  the comparison with C show whether that let LLVM skip work.
+* The size and the zero are the two arguments, `cx program.cx ++<size> ++0`
+  for cx-vm and cx-wasm and `program <size> 0` for the built forms, which
+  `benchArg` of each program reads as decimal numbers. No compiler sees
+  either at build time, as in the other languages.
 * There are no phase markers. The harness takes Load as the whole run of the
   empty CX program and splits the rest over the two passes. These phases are
   marked `est`.
 * There is no server mode and no `-time` flag.
-* The zero is a CX global, `var benchZero i32 = 0`. cx-llvm sees its
-  initial store, so LLVM computes the count loop at build time.
 
-Reading an argument, a clock and writing a byte to stderr from the vm would
-give CX the same protocol as the other languages, and an argument would
-also be a value LLVM cannot compute at build time.
+Until skycoin-cx#611 the size was written into a copy of the program and
+the zero was a global, so LLVM computed the count loop at build time and
+the first results mark cx-llvm count precomputed.
+
+A clock and a byte written to stderr from the vm would give CX the same
+protocol as the other languages.
 
 ## Running
 
@@ -214,7 +214,10 @@ The first results are in
 [results/2026-11-27](results/2026-11-27/results.md), with a summary in
 [notes.md](results/2026-11-27/notes.md). The wasm forms under node are in
 [results/2026-11-27-wasm](results/2026-11-27-wasm/results.md) with their
-[notes.md](results/2026-11-27-wasm/notes.md).
+[notes.md](results/2026-11-27-wasm/notes.md). The count benchmark of the CX
+forms with the size and the zero read from the command line is in
+[results/2026-11-27-cx-count](results/2026-11-27-cx-count/results.md), with
+its [notes.md](results/2026-11-27-cx-count/notes.md).
 
 ## CI
 

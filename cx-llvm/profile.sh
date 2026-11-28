@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runs one sized native program once under perf record. Build with
+# Runs one native program once under perf record. Build with
 # --llvm-debug for CX line names, see skycoin-cx docs/LlvmTarget.md.
 # CX has no server mode, so this is a one-shot run of two passes.
 # Usage: profile.sh <name|number> <size>. Writes results/profiles.

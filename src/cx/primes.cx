@@ -1,11 +1,12 @@
 package main
 
+import "sys/os"
+
 // A sieve below 2,000,000, deterministic Miller-Rabin below 300,000 and
 // Lucas-Lehmer 20 times for the odd prime exponents 3 to 61, once per round.
 
-// benchSize is the number of rounds. The vm subset of CX reads no arguments,
-// so run.sh writes the size here before it runs or builds the program.
-var benchSize i32 = 1
+// benchSize is the number of rounds, the first argument.
+var benchSize i32
 
 func fnv(h ui64, v ui64) (out ui64) {
 	out = (h ^ v) * 1099511628211UL
@@ -174,8 +175,20 @@ func run(size i32) (h ui64, ok bool) {
 	}
 }
 
+// benchArg returns argument index as a decimal i32, read when the program
+// runs as the other languages read it.
+func benchArg(index i32) (value i32) {
+	var argument [16]ui8
+	var length i32 = os.ArgRead(index, argument)
+	var digit i32
+	for digit = 0; digit < length; digit++ {
+		value = value*10 + ui8.i32(argument[digit]) - 48
+	}
+}
+
 func main() {
 	global benchSize
+	benchSize = benchArg(0)
 	var h1 ui64
 	var h2 ui64
 	var ok1 bool

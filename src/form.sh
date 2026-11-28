@@ -27,21 +27,10 @@ bench_name() {
 	return 1
 }
 
-# cx_sized writes the CX program $1 with its size set to $2 into dir $3 and
-# prints the path. The vm subset of CX reads no arguments, see README.md.
-# The name holds a hash of the source and the cx revision, so what is built
-# from it is rebuilt when either changes.
-cx_sized() {
-	local key file
-	key=$(cat "$ROOT/src/cx/$1.cx" "$OUT/cx-tools/rev.txt" 2>/dev/null | sha256sum | cut -c1-12)
-	file=$3/$1-$2-$key.cx
-	mkdir -p "$3"
-	if [[ ! -f $file ]]; then
-		sed "s/^var benchSize i32 = 1\$/var benchSize i32 = $2/" "$ROOT/src/cx/$1.cx" >"$file.tmp"
-		grep -q "^var benchSize i32 = $2\$" "$file.tmp" || { echo "cx_sized: no benchSize line in $1.cx" >&2; return 1; }
-		mv "$file.tmp" "$file"
-	fi
-	echo "$file"
+# cx_key prints a hash of the CX program $1 and the cx revision, which names
+# what a form builds from it, so that is rebuilt when either changes.
+cx_key() {
+	cat "$ROOT/src/cx/$1.cx" "$OUT/cx-tools/rev.txt" 2>/dev/null | sha256sum | cut -c1-12
 }
 
 # node_flags prints the node flags of VARIANT: default, or turbofan for

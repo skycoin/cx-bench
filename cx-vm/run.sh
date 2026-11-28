@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
 # cx --executor=vm, the flat vm, running the .cx source. The program is
 # parsed and lowered in the Load phase. LAYOUT=b runs cx built with the vm
-# loop moved. CX has no input on vm, so the size goes into the source.
+# loop moved. The size and the zero are ++ arguments, which cx passes on.
 source "$(dirname "$0")/../src/form.sh"
 FORM_CAPS="layout"
-form_cmd() {
-	local file
-	file=$(cx_sized "$1" "$2" "$OUT/cx-sized") || return 1
-	printf '%s\n' "$OUT/cx-tools/$LAYOUT/cx" --executor=vm "$file"
-}
+form_cmd() { printf '%s\n' "$OUT/cx-tools/$LAYOUT/cx" --executor=vm "$ROOT/src/cx/$1.cx" "++$2" "++0"; }
 form_cmd_empty() { printf '%s\n' "$OUT/cx-tools/$LAYOUT/cx" --executor=vm "$ROOT/src/cx/empty.cx"; }
 form_main "$@"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # cx build --target=llvm linked by TinyGo for wasm32-wasip1, under
 # node:wasi. VARIANT=default runs node as it ships, turbofan with
-# --no-liftoff. The size goes into the source, so LLVM sees a constant.
+# --no-liftoff. The size and the zero are arguments, as in cx-llvm.
 source "$(dirname "$0")/../src/form.sh"
 FORM_CAPS=""
 FORM_VARIANTS="default turbofan"
@@ -15,9 +15,8 @@ module() {
 	printf '%s\n' "$(command -v node)" --no-warnings $(node_flags) "$ROOT/src/wasi/wasi.mjs" "$wasm"
 }
 form_cmd() {
-	local file
-	file=$(cx_sized "$1" "$2" "$OUT/cx-sized") || return 1
-	module "$file" "$OUT/cx-llvm-wasm/$(basename "$file" .cx).wasm"
+	module "$ROOT/src/cx/$1.cx" "$OUT/cx-llvm-wasm/$1-$(cx_key "$1").wasm" || return 1
+	printf '%s\n' "$2" 0
 }
 form_cmd_empty() { module "$ROOT/src/cx/empty.cx" "$OUT/cx-llvm-wasm/empty.wasm"; }
 form_main "$@"
