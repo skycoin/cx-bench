@@ -15,7 +15,8 @@ import os
 import time
 
 NAMES = ["count", "fib", "array", "struct", "memtest", "primes", "ackermann",
-         "digitalroot", "factorialiter", "factorialrec", "structs", "structserialize"]
+         "digitalroot", "factorialiter", "factorialrec", "structs", "structserialize",
+         "fibiter", "ackermanniter"]
 FNV_OFFSET = 14695981039346656037
 FNV_PRIME = 1099511628211
 MASK64 = 0xFFFFFFFFFFFFFFFF

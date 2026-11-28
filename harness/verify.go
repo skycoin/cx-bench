@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"strings"
 )
 
 // verifyCommand runs every benchmark of every form at a small size and
@@ -31,14 +30,14 @@ func verifyCommand(root string, args []string) error {
 			fmt.Printf("FAIL %-18s empty: %s\n", f.label(), r.Error)
 			failures++
 		}
-		for _, bench := range benchNames {
+		for _, bench := range benchRows {
 			skipped := false
 			for _, layout := range layouts {
 				r := oneShot(f, layout, bench, *size, expected.want)
 				status := "ok  "
 				switch {
 				case r.Pass:
-				case strings.Contains(r.Error, "no Lua 5.1 version"):
+				case notRun(r):
 					status = "skip"
 					skipped = true
 				default:

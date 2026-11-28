@@ -23,4 +23,6 @@ uint64_t bench_factorialiter(int64_t size, int *pass);
 uint64_t bench_factorialrec(int64_t size, int *pass);
 uint64_t bench_structs(int64_t size, int *pass);
 uint64_t bench_structserialize(int64_t size, int *pass);
+uint64_t bench_fibiter(int64_t size, int *pass);
+uint64_t bench_ackermanniter(int64_t size, int *pass);
 #endif

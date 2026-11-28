@@ -12,7 +12,8 @@
 io.stderr:write("S")
 
 local NAMES = { "count", "fib", "array", "struct", "memtest", "primes", "ackermann",
-	"digitalroot", "factorialiter", "factorialrec", "structs", "structserialize" }
+	"digitalroot", "factorialiter", "factorialrec", "structs", "structserialize", "fibiter",
+	"ackermanniter" }
 local MISSING = { primes = true, factorialiter = true, factorialrec = true }
 
 local XOR = {}

@@ -14,10 +14,12 @@ import (
 )
 
 // chartRow holds the best CX, Lua, Go and C time per round of one
-// benchmark over the C time. 0 means no value.
+// benchmark over the C time. 0 means no value. notRun names the languages
+// whose forms leave the benchmark out on purpose, "CX" for example.
 type chartRow struct {
 	bench  string
 	ratios [4]float64
+	notRun string
 }
 
 var (
@@ -76,7 +78,12 @@ func chartWrite(path string, rows []chartRow, title string) error {
 	}
 	for i, row := range rows {
 		cy := top + rowHeight*i + rowHeight/2
-		text(img, 20, cy+4, row.bench, chartText)
+		if row.notRun != "" {
+			text(img, 20, cy, row.bench, chartText)
+			text(img, 20, cy+13, row.notRun+" not run", chartMuted)
+		} else {
+			text(img, 20, cy+4, row.bench, chartText)
+		}
 		fill(img, image.Rect(left, cy, width-right, cy+1), chartGrid)
 		for s := 3; s >= 0; s-- {
 			if row.ratios[s] > 0 {

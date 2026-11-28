@@ -2,7 +2,9 @@ package main
 
 import "sys/os"
 
-// n! for n 0 to 20 by recursion once per round.
+// Ackermann(3, 5) with an explicit stack, 42,438 steps, once per round. The
+// loop variant of ackermann, which the CX forms run instead of the recursive
+// one (decision D145).
 
 // benchSize is the number of rounds, the first argument.
 var benchSize i32
@@ -15,28 +17,41 @@ func fnv(h ui64, v ui64) (out ui64) {
 	out = (h ^ v) * 1099511628211UL
 }
 
-func factorial(n ui64) (out ui64) {
-	if n == 0UL {
-		out = 1UL
-	} else {
-		out = n * factorial(n-1UL)
+// ackermann takes one step per call of the recursive form: pop m, then push
+// what the call would recurse into. A(3, 5) holds at most 252 pending m values.
+func ackermann(m i32, n i32) (out i32) {
+	var stack [1024]i32
+	var top i32 = 1
+	stack[0] = m
+	for top > 0 {
+		top--
+		m = stack[top]
+		if m == 0 {
+			n++
+		} else if n == 0 {
+			stack[top] = m - 1
+			top++
+			n = 1
+		} else {
+			stack[top] = m - 1
+			stack[top+1] = m
+			top = top + 2
+			n--
+		}
 	}
+	out = n
 }
 
 func run(size i32) (h ui64, ok bool) {
 	global benchZero
 	h = 14695981039346656037UL
 	ok = true
-	var f ui64
-	var n ui64
+	var r i32
 	var round i32
 	for round = 0; round < size; round++ {
-		f = 0UL
-		for n = 0UL; n <= 20UL+i32.ui64(benchZero); n++ {
-			f = factorial(n)
-			h = fnv(h, f)
-		}
-		ok = ok && f == 2432902008176640000UL
+		r = ackermann(3, 5+benchZero)
+		h = fnv(h, i32.ui64(r))
+		ok = ok && r == 253
 	}
 }
 
@@ -63,8 +78,8 @@ func main() {
 	h2, ok2 = run(benchSize)
 	ui64.print(h1)
 	if ok1 && ok2 && h1 == h2 {
-		printf("factorialrec pass\n")
+		printf("ackermanniter pass\n")
 	} else {
-		printf("factorialrec FAIL\n")
+		printf("ackermanniter FAIL\n")
 	}
 }

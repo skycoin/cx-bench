@@ -2,7 +2,7 @@ package main
 
 import "sys/os"
 
-// Recursive fib(25), 242,785 calls, once per round.
+// fib(25) with a loop, 25 steps, once per round. The loop variant of fib.
 
 // benchSize is the number of rounds, the first argument.
 var benchSize i32
@@ -16,11 +16,16 @@ func fnv(h ui64, v ui64) (out ui64) {
 }
 
 func fib(n i32) (out i32) {
-	if n < 2 {
-		out = n
-	} else {
-		out = fib(n-1) + fib(n-2)
+	var a i32 = 0
+	var b i32 = 1
+	var next i32
+	var k i32
+	for k = 0; k < n; k++ {
+		next = a + b
+		a = b
+		b = next
 	}
+	out = a
 }
 
 func run(size i32) (h ui64, ok bool) {
@@ -59,8 +64,8 @@ func main() {
 	h2, ok2 = run(benchSize)
 	ui64.print(h1)
 	if ok1 && ok2 && h1 == h2 {
-		printf("fib pass\n")
+		printf("fibiter pass\n")
 	} else {
-		printf("fib FAIL\n")
+		printf("fibiter FAIL\n")
 	}
 }

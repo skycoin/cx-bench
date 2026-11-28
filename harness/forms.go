@@ -11,7 +11,16 @@ import (
 
 // benchNames are the benchmarks in their fixed order, number 1 first.
 var benchNames = []string{"count", "fib", "array", "struct", "memtest", "primes", "ackermann",
-	"digitalroot", "factorialiter", "factorialrec", "structs", "structserialize"}
+	"digitalroot", "factorialiter", "factorialrec", "structs", "structserialize", "fibiter", "ackermanniter"}
+
+// benchRows are the benchmarks in the order of the runs, the report and the
+// chart, each loop variant next to its recursive variant (decision D145).
+var benchRows = []string{"count", "fib", "fibiter", "array", "struct", "memtest", "primes", "ackermann",
+	"ackermanniter", "digitalroot", "factorialiter", "factorialrec", "structs", "structserialize"}
+
+// notRun tells whether a form left a benchmark out on purpose: its run.sh
+// printed "not run: <reason>" (FORM_NOT_RUN in src/form.sh).
+func notRun(r run) bool { return strings.Contains(r.Error, "not run: ") }
 
 // formsNative and formsWasm are every form folder, native first.
 var (

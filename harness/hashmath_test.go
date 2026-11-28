@@ -44,6 +44,12 @@ var hashesOfGoForm = []struct {
 	{"structserialize", 1, 12638214688346347271},
 	{"structserialize", 2, 644099442219955380},
 	{"structserialize", 3, 13585581175438645566},
+	{"fibiter", 1, 12702064428108188252},
+	{"fibiter", 2, 791634122422345687},
+	{"fibiter", 3, 13398842690933890674},
+	{"ackermanniter", 1, 12638349928276617224},
+	{"ackermanniter", 2, 762171597903747151},
+	{"ackermanniter", 3, 16930126232538003062},
 }
 
 func TestHashComputeMatchesTheGoForm(t *testing.T) {
@@ -51,5 +57,20 @@ func TestHashComputeMatchesTheGoForm(t *testing.T) {
 		if got := hashCompute(want.bench, want.size); got != want.hash {
 			t.Errorf("%s %d: math gives %d, the Go form printed %d", want.bench, want.size, got, want.hash)
 		}
+	}
+}
+
+func TestBenchRowsHoldEveryBenchmarkOnce(t *testing.T) {
+	seen := map[string]int{}
+	for _, bench := range benchRows {
+		seen[bench]++
+	}
+	for _, bench := range benchNames {
+		if seen[bench] != 1 {
+			t.Errorf("%s is %d times in benchRows, want once", bench, seen[bench])
+		}
+	}
+	if len(benchRows) != len(benchNames) {
+		t.Errorf("benchRows has %d names, benchNames %d", len(benchRows), len(benchNames))
 	}
 }
